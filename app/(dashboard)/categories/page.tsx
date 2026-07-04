@@ -95,7 +95,11 @@ export default function CategoriesPage() {
           description="Try adjusting your filters, or add your first category."
         />
       ) : (
-        <CategoriesTable categories={paginatedCategories} onDelete={handleDelete} />
+        <CategoriesTable
+          categories={paginatedCategories}
+          onEdit={setEditingCategory}
+          onDelete={handleDelete}
+        />
       )}
 
       <PaginationControls
