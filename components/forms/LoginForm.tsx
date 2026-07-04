@@ -9,6 +9,7 @@ import { Mail, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { loginSchema, type LoginFormData } from "@/validations/auth.schema";
 import { PasswordField } from "@/components/auth/PasswordField";
+import { Logo } from "../shared/Logo";
 
 export function LoginForm() {
   const router = useRouter();
@@ -57,11 +58,7 @@ export function LoginForm() {
     <div className="w-full max-w-md relative z-10">
       <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-8 md:p-10">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg mb-4">
-            <span className="text-2xl font-bold text-white" aria-hidden="true">
-              E
-            </span>
-          </div>
+          <Logo />
           <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
           <p className="text-slate-500 mt-2 text-sm">Sign in to manage your store</p>
         </div>
@@ -98,7 +95,7 @@ export function LoginForm() {
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between">
               <span />
               <Link
                 href="/forgot-password"
