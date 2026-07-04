@@ -2,14 +2,14 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Package, Tag, ShoppingBag, BarChart3 } from "lucide-react";
+import { LayoutDashboard, Package, Tag, Box, ShoppingBag } from "lucide-react";
 
 const navItems = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { title: "Products", href: "/products", icon: Package },
   { title: "Categories", href: "/categories", icon: Tag },
+  { title: "Inventory", href: "/inventory", icon: Box },
   { title: "Orders", href: "/orders", icon: ShoppingBag },
-  { title: "Analytics", href: "/analytics", icon: BarChart3 },
 ];
 
 export function MobileNav() {
@@ -37,9 +37,7 @@ export function MobileNav() {
                     : "hover:bg-slate-100"
                 }`}>
                 <Icon
-                  className={`w-5 h-5 transition-colors ${
-                    isActive ? "text-blue-600" : "text-slate-500"
-                  }`}
+                  className={`w-5 h-5 transition-colors ${isActive ? "text-blue-600" : "text-slate-500"}`}
                   aria-hidden="true"
                 />
               </span>

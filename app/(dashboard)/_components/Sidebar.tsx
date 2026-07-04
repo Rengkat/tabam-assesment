@@ -4,25 +4,12 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 // import { signOut } from "next-auth/react";
 // import { useSession } from "next-auth/react";
-import {
-  LayoutDashboard,
-  Package,
-  Tag,
-  Box,
-  ShoppingBag,
-  BarChart3,
-  Users,
-  Settings,
-  LogOut,
-  X,
-  Store,
-} from "lucide-react";
+import { LayoutDashboard, Package, Tag, Box, ShoppingBag, LogOut, X, Store } from "lucide-react";
 
 interface SidebarProps {
   isMobile?: boolean;
   onClose?: () => void;
 }
-
 const navItems = [
   {
     title: "Dashboard",
@@ -52,34 +39,7 @@ const navItems = [
     color: "text-orange-500",
     bg: "bg-orange-500/10",
   },
-  {
-    title: "Orders",
-    href: "/orders",
-    icon: ShoppingBag,
-    color: "text-pink-500",
-    bg: "bg-pink-500/10",
-  },
-  {
-    title: "Analytics",
-    href: "/analytics",
-    icon: BarChart3,
-    color: "text-cyan-500",
-    bg: "bg-cyan-500/10",
-  },
-  {
-    title: "Customers",
-    href: "/customers",
-    icon: Users,
-    color: "text-indigo-500",
-    bg: "bg-indigo-500/10",
-  },
-  {
-    title: "Settings",
-    href: "/settings",
-    icon: Settings,
-    color: "text-slate-500",
-    bg: "bg-slate-500/10",
-  },
+  { title: "Orders", href: "/orders", icon: ShoppingBag },
 ];
 
 export function Sidebar({ isMobile, onClose }: SidebarProps) {
