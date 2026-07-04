@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Edit, Folder } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { ConfirmDeleteDialog } from "@/components/shared/ConfirmDeleteDialog";
@@ -8,10 +7,11 @@ import type { Category } from "@/types/category.types";
 
 interface CategoriesTableProps {
   categories: Category[];
+  onEdit: (category: Category) => void;
   onDelete: (id: string) => void;
 }
 
-export function CategoriesTable({ categories, onDelete }: CategoriesTableProps) {
+export function CategoriesTable({ categories, onEdit, onDelete }: CategoriesTableProps) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200/50 overflow-hidden">
       <div className="overflow-x-auto">
@@ -66,12 +66,12 @@ export function CategoriesTable({ categories, onDelete }: CategoriesTableProps) 
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-1">
-                    <Link
-                      href={`/categories/${category.id}`}
+                    <button
+                      onClick={() => onEdit(category)}
                       aria-label={`Edit ${category.name}`}
                       className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/40">
                       <Edit className="w-4 h-4 text-slate-500" aria-hidden="true" />
-                    </Link>
+                    </button>
                     <ConfirmDeleteDialog
                       itemLabel="category"
                       itemName={category.name}
