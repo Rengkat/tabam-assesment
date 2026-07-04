@@ -10,9 +10,9 @@ export function Logo({ variant = "blue" }: LogoProps) {
 
   return (
     <div
-      className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg mb-4`}>
+      className={`inline-flex items-center justify-center p-4 h-16 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg mb-4`}>
       <span className="text-2xl font-bold text-white" aria-hidden="true">
-        E
+        Tabam
       </span>
     </div>
   );

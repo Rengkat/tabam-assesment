@@ -95,7 +95,7 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
           <Store className="w-5 h-5 text-white" aria-hidden="true" />
         </div>
         <div>
-          <h1 className="text-lg font-bold text-slate-900">E-Store</h1>
+          <h1 className="text-lg font-bold text-slate-900">Tabam-Store</h1>
           <p className="text-xs text-slate-500">Admin Dashboard</p>
         </div>
         {isMobile && (
