@@ -42,6 +42,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
         <div className="relative">
           <button
+            title="Profile"
             onClick={() => setIsProfileOpen((v) => !v)}
             aria-haspopup="menu"
             aria-expanded={isProfileOpen}
