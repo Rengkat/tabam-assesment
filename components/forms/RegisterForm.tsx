@@ -143,8 +143,10 @@ export function RegisterForm() {
               disabled={isLoading}
               autoComplete="new-password"
             />
-            <PasswordStrengthMeter password={password} />
-            <PasswordRequirements password={password} />
+            <div className="mt-4 space-y-1">
+              <PasswordStrengthMeter password={password} />
+              <PasswordRequirements password={password} />
+            </div>
           </div>
 
           {/* Confirm Password */}
