@@ -9,16 +9,22 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { productSchema, type ProductFormData } from "@/validations/product.schema";
 import { ImageUploadField } from "@/components/products/ImageUploadField";
-import { productCategories } from "@/lib/mock/products";
 
 interface ProductFormProps {
   mode: "create" | "edit";
-  defaultValues?: ProductFormData;
+  defaultValues?: ProductFormData & { categoryId: string };
   initialImage?: string;
-  onSubmit: (data: ProductFormData, image: File | null) => Promise<void>;
+  categories: { id: string; name: string }[];
+  onSubmit: (data: ProductFormData & { categoryId: string }, image: File | null) => Promise<void>;
 }
 
-export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: ProductFormProps) {
+export function ProductForm({
+  mode,
+  defaultValues,
+  initialImage,
+  categories,
+  onSubmit,
+}: ProductFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [image, setImage] = useState<File | null>(null);
@@ -28,12 +34,14 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
+  } = useForm<ProductFormData & { categoryId: string }>({
+    resolver: zodResolver(
+      productSchema.extend({ categoryId: productSchema.shape.category }),
+    ) as any,
     defaultValues: defaultValues ?? {
       name: "",
       description: "",
-      category: "",
+      categoryId: "",
       price: 0,
       sku: "",
       stock: 0,
@@ -41,7 +49,7 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
     },
   });
 
-  const submit = async (data: ProductFormData) => {
+  const submit = async (data: ProductFormData & { categoryId: string }) => {
     setIsSubmitting(true);
     try {
       await onSubmit(data, image);
@@ -49,8 +57,9 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
         mode === "create" ? "Product created successfully!" : "Product updated successfully!",
       );
       router.push("/products");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+      router.refresh();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -78,7 +87,7 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
             Product Name <span className="text-red-500">*</span>
           </label>
           <input
-            title="title"
+            title="Product Name"
             id="name"
             type="text"
             placeholder="e.g. Premium Wireless Headphones"
@@ -101,12 +110,11 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
             Description <span className="text-red-500">*</span>
           </label>
           <textarea
-            title="describtion"
+            title="Description"
             id="description"
             rows={4}
             placeholder="Describe the product..."
             aria-invalid={!!errors.description}
-            aria-describedby={errors.description ? "description-error" : undefined}
             className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50 text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-y ${
               errors.description ? "border-red-500" : "border-slate-200 hover:border-slate-300"
             }`}
@@ -114,7 +122,7 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
           />
           <div className="flex justify-between mt-1.5">
             {errors.description ? (
-              <p id="description-error" role="alert" className="text-sm text-red-500">
+              <p role="alert" className="text-sm text-red-500">
                 {errors.description.message}
               </p>
             ) : (
@@ -127,27 +135,27 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="categoryId" className="block text-sm font-medium text-slate-700 mb-1.5">
               Category <span className="text-red-500">*</span>
             </label>
             <select
-              title="category"
-              id="category"
-              aria-invalid={!!errors.category}
+              title="Category"
+              id="categoryId"
+              aria-invalid={!!errors.categoryId}
               className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50 text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 ${
-                errors.category ? "border-red-500" : "border-slate-200 hover:border-slate-300"
+                errors.categoryId ? "border-red-500" : "border-slate-200 hover:border-slate-300"
               }`}
-              {...register("category")}>
+              {...register("categoryId")}>
               <option value="">Select category</option>
-              {productCategories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
                 </option>
               ))}
             </select>
-            {errors.category && (
+            {errors.categoryId && (
               <p role="alert" className="text-sm text-red-500 mt-1.5">
-                {errors.category.message}
+                Please select a category
               </p>
             )}
           </div>
@@ -157,7 +165,7 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
               SKU <span className="text-red-500">*</span>
             </label>
             <input
-              title="sku"
+              title="SKU"
               id="sku"
               type="text"
               placeholder="SKU-000001"
@@ -181,7 +189,7 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
               Price (₦) <span className="text-red-500">*</span>
             </label>
             <input
-              title="price"
+              title="Price"
               id="price"
               type="number"
               step="0.01"
@@ -204,7 +212,7 @@ export function ProductForm({ mode, defaultValues, initialImage, onSubmit }: Pro
               Stock Quantity <span className="text-red-500">*</span>
             </label>
             <input
-              title="stock"
+              title="Stock Quantity"
               id="stock"
               type="number"
               placeholder="0"
