@@ -46,7 +46,7 @@ export function LoginForm() {
 
       toast.success("Welcome back!");
       router.push(callbackUrl);
-      router.refresh(); // re-runs middleware/server components with new cookie
+      router.refresh();
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
