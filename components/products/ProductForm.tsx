@@ -12,10 +12,10 @@ import { ImageUploadField } from "@/components/products/ImageUploadField";
 
 interface ProductFormProps {
   mode: "create" | "edit";
-  defaultValues?: ProductFormData & { categoryId: string };
+  defaultValues?: ProductFormData;
   initialImage?: string;
   categories: { id: string; name: string }[];
-  onSubmit: (data: ProductFormData & { categoryId: string }, image: File | null) => Promise<void>;
+  onSubmit: (data: ProductFormData, image: File | null) => Promise<void>;
 }
 
 export function ProductForm({
@@ -34,10 +34,8 @@ export function ProductForm({
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<ProductFormData & { categoryId: string }>({
-    resolver: zodResolver(
-      productSchema.extend({ categoryId: productSchema.shape.category }),
-    ) as any,
+  } = useForm<ProductFormData>({
+    resolver: zodResolver(productSchema),
     defaultValues: defaultValues ?? {
       name: "",
       description: "",
@@ -49,7 +47,7 @@ export function ProductForm({
     },
   });
 
-  const submit = async (data: ProductFormData & { categoryId: string }) => {
+  const submit = async (data: ProductFormData) => {
     setIsSubmitting(true);
     try {
       await onSubmit(data, image);
@@ -87,7 +85,7 @@ export function ProductForm({
             Product Name <span className="text-red-500">*</span>
           </label>
           <input
-            title="Product Name"
+            title="name"
             id="name"
             type="text"
             placeholder="e.g. Premium Wireless Headphones"
@@ -110,7 +108,7 @@ export function ProductForm({
             Description <span className="text-red-500">*</span>
           </label>
           <textarea
-            title="Description"
+            title="describtion"
             id="description"
             rows={4}
             placeholder="Describe the product..."
@@ -139,7 +137,7 @@ export function ProductForm({
               Category <span className="text-red-500">*</span>
             </label>
             <select
-              title="Category"
+              title="categoryId"
               id="categoryId"
               aria-invalid={!!errors.categoryId}
               className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50 text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 ${
@@ -165,7 +163,7 @@ export function ProductForm({
               SKU <span className="text-red-500">*</span>
             </label>
             <input
-              title="SKU"
+              title="sku"
               id="sku"
               type="text"
               placeholder="SKU-000001"
@@ -189,7 +187,7 @@ export function ProductForm({
               Price (₦) <span className="text-red-500">*</span>
             </label>
             <input
-              title="Price"
+              title="price"
               id="price"
               type="number"
               step="0.01"
@@ -212,7 +210,6 @@ export function ProductForm({
               Stock Quantity <span className="text-red-500">*</span>
             </label>
             <input
-              title="Stock Quantity"
               id="stock"
               type="number"
               placeholder="0"

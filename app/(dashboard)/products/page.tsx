@@ -11,15 +11,16 @@ import { getCategories } from "../categories/actions";
 const PER_PAGE = 10;
 
 interface ProductsPageProps {
-  searchParams: { search?: string; category?: string; status?: string; page?: string };
+  searchParams: Promise<{ search?: string; category?: string; status?: string; page?: string }>;
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-  const page = Number(searchParams.page) || 1;
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
   const { products, total } = await getProducts({
-    search: searchParams.search,
-    category: searchParams.category,
-    status: searchParams.status,
+    search: params.search,
+    category: params.category,
+    status: params.status,
     page,
     perPage: PER_PAGE,
   });
@@ -44,9 +45,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       </div>
 
       <ProductFilters
-        initialSearch={searchParams.search ?? ""}
-        initialCategory={searchParams.category ?? ""}
-        initialStatus={searchParams.status ?? "all"}
+        initialSearch={params.search ?? ""}
+        initialCategory={params.category ?? ""}
+        initialStatus={params.status ?? "all"}
         categories={categories.map((c) => ({ id: c.id, name: c.name }))}
       />
 
@@ -71,7 +72,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         totalPages={totalPages}
         totalItems={total}
         perPage={PER_PAGE}
-        baseParams={searchParams}
+        baseParams={params}
       />
     </div>
   );
