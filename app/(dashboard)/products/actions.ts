@@ -79,11 +79,9 @@ export async function getProductById(id: string) {
   };
 }
 
-export async function createProduct(
-  data: ProductFormData & { categoryId: string; image?: string },
-) {
+export async function createProduct(data: ProductFormData & { image?: string }) {
   await requireSession();
-  const { categoryId, image, ...rest } = data;
+  const { image, ...rest } = data;
   const parsed = productSchema.parse(rest);
 
   await connectDB();
@@ -93,21 +91,24 @@ export async function createProduct(
     throw new Error("A product with this SKU already exists");
   }
 
-  await Product.create({ ...parsed, category: categoryId, image });
+  const { categoryId, ...productFields } = parsed;
+  await Product.create({ ...productFields, category: categoryId, image });
   revalidatePath("/products");
   revalidatePath("/dashboard");
 }
 
-export async function updateProduct(
-  id: string,
-  data: ProductFormData & { categoryId: string; image?: string },
-) {
+export async function updateProduct(id: string, data: ProductFormData & { image?: string }) {
   await requireSession();
-  const { categoryId, image, ...rest } = data;
+  const { image, ...rest } = data;
   const parsed = productSchema.parse(rest);
-
   await connectDB();
-  await Product.findByIdAndUpdate(id, { ...parsed, category: categoryId, ...(image && { image }) });
+  const { categoryId, ...productFields } = parsed;
+  await Product.findByIdAndUpdate(id, {
+    ...productFields,
+    category: categoryId,
+    ...(image && { image }),
+  });
+
   revalidatePath("/products");
   revalidatePath(`/products/${id}/edit`);
 }

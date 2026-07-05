@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { PaginationControls } from "@/components/shared/PaginationControls";
 import { getProducts } from "./actions";
 import { getCategories } from "../categories/actions";
+import ProductsLoading from "@/components/products/loading";
 
 const PER_PAGE = 10;
 
@@ -59,10 +60,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           actionLabel="Add Product"
         />
       ) : (
-        <Suspense
-          fallback={
-            <div className="h-40 animate-pulse bg-white rounded-2xl border border-slate-200/50" />
-          }>
+        <Suspense fallback={<ProductsLoading />}>
           <ProductsTable products={products} />
         </Suspense>
       )}

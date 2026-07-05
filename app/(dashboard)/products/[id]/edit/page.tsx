@@ -5,21 +5,21 @@ import { getCategories } from "../../../categories/actions";
 import type { ProductFormData } from "@/validations/product.schema";
 
 interface EditProductPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
-  const [product, categories] = await Promise.all([getProductById(params.id), getCategories()]);
+  const { id } = await params;
 
-  if (!product) notFound();
+  const [product, categories] = await Promise.all([getProductById(id), getCategories()]);
 
-  async function handleUpdate(data: ProductFormData, image: File | null) {
+  if (!product) {
+    notFound();
+  }
+
+  async function handleUpdate(data: ProductFormData, imageUrl: string | undefined) {
     "use server";
-    let imageUrl: string | undefined;
-    if (image) {
-      // TODO: upload to Vercel Blob and set imageUrl to the returned URL
-    }
-    await updateProduct(params.id, { ...data, image: imageUrl });
+    await updateProduct(id, { ...data, image: imageUrl });
   }
 
   return (

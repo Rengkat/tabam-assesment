@@ -9,14 +9,25 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { productSchema, type ProductFormData } from "@/validations/product.schema";
 import { ImageUploadField } from "@/components/products/ImageUploadField";
+import { uploadImage } from "@/lib/utils/upload-image";
 
 interface ProductFormProps {
   mode: "create" | "edit";
   defaultValues?: ProductFormData;
   initialImage?: string;
   categories: { id: string; name: string }[];
-  onSubmit: (data: ProductFormData, image: File | null) => Promise<void>;
+  onSubmit: (data: ProductFormData, imageUrl: string | undefined) => Promise<void>;
 }
+
+const EMPTY_DEFAULTS: ProductFormData = {
+  name: "",
+  description: "",
+  categoryId: "",
+  price: 0,
+  sku: "",
+  stock: 0,
+  status: "draft",
+};
 
 export function ProductForm({
   mode,
@@ -36,24 +47,25 @@ export function ProductForm({
     formState: { errors },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
-    defaultValues: defaultValues ?? {
-      name: "",
-      description: "",
-      categoryId: "",
-      price: 0,
-      sku: "",
-      stock: 0,
-      status: "draft",
-    },
+    defaultValues: defaultValues ?? EMPTY_DEFAULTS,
   });
 
   const submit = async (data: ProductFormData) => {
     setIsSubmitting(true);
+
     try {
-      await onSubmit(data, image);
+      let imageUrl = initialImage;
+
+      if (image) {
+        imageUrl = await uploadImage(image);
+      }
+
+      await onSubmit(data, imageUrl);
+
       toast.success(
         mode === "create" ? "Product created successfully!" : "Product updated successfully!",
       );
+
       router.push("/products");
       router.refresh();
     } catch (err) {
@@ -85,7 +97,6 @@ export function ProductForm({
             Product Name <span className="text-red-500">*</span>
           </label>
           <input
-            title="name"
             id="name"
             type="text"
             placeholder="e.g. Premium Wireless Headphones"
@@ -108,11 +119,11 @@ export function ProductForm({
             Description <span className="text-red-500">*</span>
           </label>
           <textarea
-            title="describtion"
             id="description"
             rows={4}
             placeholder="Describe the product..."
             aria-invalid={!!errors.description}
+            aria-describedby={errors.description ? "description-error" : undefined}
             className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50 text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-y ${
               errors.description ? "border-red-500" : "border-slate-200 hover:border-slate-300"
             }`}
@@ -120,7 +131,7 @@ export function ProductForm({
           />
           <div className="flex justify-between mt-1.5">
             {errors.description ? (
-              <p role="alert" className="text-sm text-red-500">
+              <p id="description-error" role="alert" className="text-sm text-red-500">
                 {errors.description.message}
               </p>
             ) : (
@@ -137,9 +148,9 @@ export function ProductForm({
               Category <span className="text-red-500">*</span>
             </label>
             <select
-              title="categoryId"
               id="categoryId"
               aria-invalid={!!errors.categoryId}
+              aria-describedby={errors.categoryId ? "categoryId-error" : undefined}
               className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50 text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 ${
                 errors.categoryId ? "border-red-500" : "border-slate-200 hover:border-slate-300"
               }`}
@@ -152,8 +163,8 @@ export function ProductForm({
               ))}
             </select>
             {errors.categoryId && (
-              <p role="alert" className="text-sm text-red-500 mt-1.5">
-                Please select a category
+              <p id="categoryId-error" role="alert" className="text-sm text-red-500 mt-1.5">
+                {errors.categoryId.message}
               </p>
             )}
           </div>
@@ -163,18 +174,18 @@ export function ProductForm({
               SKU <span className="text-red-500">*</span>
             </label>
             <input
-              title="sku"
               id="sku"
               type="text"
               placeholder="SKU-000001"
               aria-invalid={!!errors.sku}
+              aria-describedby={errors.sku ? "sku-error" : undefined}
               className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50 text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 ${
                 errors.sku ? "border-red-500" : "border-slate-200 hover:border-slate-300"
               }`}
               {...register("sku")}
             />
             {errors.sku && (
-              <p role="alert" className="text-sm text-red-500 mt-1.5">
+              <p id="sku-error" role="alert" className="text-sm text-red-500 mt-1.5">
                 {errors.sku.message}
               </p>
             )}
@@ -187,19 +198,19 @@ export function ProductForm({
               Price (₦) <span className="text-red-500">*</span>
             </label>
             <input
-              title="price"
               id="price"
               type="number"
               step="0.01"
               placeholder="0.00"
               aria-invalid={!!errors.price}
+              aria-describedby={errors.price ? "price-error" : undefined}
               className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50 text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 ${
                 errors.price ? "border-red-500" : "border-slate-200 hover:border-slate-300"
               }`}
               {...register("price", { valueAsNumber: true })}
             />
             {errors.price && (
-              <p role="alert" className="text-sm text-red-500 mt-1.5">
+              <p id="price-error" role="alert" className="text-sm text-red-500 mt-1.5">
                 {errors.price.message}
               </p>
             )}
@@ -214,13 +225,14 @@ export function ProductForm({
               type="number"
               placeholder="0"
               aria-invalid={!!errors.stock}
+              aria-describedby={errors.stock ? "stock-error" : undefined}
               className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50 text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 ${
                 errors.stock ? "border-red-500" : "border-slate-200 hover:border-slate-300"
               }`}
               {...register("stock", { valueAsNumber: true })}
             />
             {errors.stock && (
-              <p role="alert" className="text-sm text-red-500 mt-1.5">
+              <p id="stock-error" role="alert" className="text-sm text-red-500 mt-1.5">
                 {errors.stock.message}
               </p>
             )}

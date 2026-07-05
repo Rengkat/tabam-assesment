@@ -6,12 +6,8 @@ import type { ProductFormData } from "@/validations/product.schema";
 export default async function NewProductPage() {
   const categories = await getCategories();
 
-  async function handleCreate(data: ProductFormData, image: File | null) {
+  async function handleCreate(data: ProductFormData, imageUrl: string | undefined) {
     "use server";
-    let imageUrl: string | undefined;
-    if (image) {
-      // TODO: upload to Vercel Blob and set imageUrl to the returned URL
-    }
     await createProduct({ ...data, image: imageUrl });
   }
 
