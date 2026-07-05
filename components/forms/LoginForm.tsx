@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, ArrowRight, Loader2 } from "lucide-react";
@@ -30,17 +31,17 @@ export function LoginForm() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+        callbackUrl,
       });
 
-      if (!res.ok) {
-        const { error } = await res.json();
+      if (result?.error) {
         setError("email", { message: "Invalid email or password" });
         setError("password", { message: "Invalid email or password" });
-        toast.error(error || "Invalid credentials. Please try again.");
+        toast.error("Invalid credentials. Please try again.");
         return;
       }
 
@@ -73,7 +74,6 @@ export function LoginForm() {
                 <Mail className="h-5 w-5 text-slate-400" aria-hidden="true" />
               </div>
               <input
-                title="Email Address"
                 id="email"
                 type="email"
                 autoComplete="email"
