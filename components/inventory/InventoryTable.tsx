@@ -3,11 +3,11 @@
 import Image from "next/image";
 import { Settings, Package } from "lucide-react";
 import { StockLevelBar } from "./StockLevelBar";
-import type { Product } from "@/types/product.types";
+import type { InventoryItem } from "@/types/inventory.types";
 
 interface InventoryTableProps {
-  products: Product[];
-  onAdjust: (product: Product) => void;
+  products: InventoryItem[];
+  onAdjust: (product: InventoryItem) => void;
 }
 
 const LOW_STOCK_THRESHOLD = 15;

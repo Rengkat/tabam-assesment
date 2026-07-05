@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { X, Loader2 } from "lucide-react";
-import type { Product } from "@/types/product.types";
+import type { InventoryItem } from "@/types/inventory.types";
 
 interface AdjustStockModalProps {
-  product: Product | null;
+  product: InventoryItem | null;
   onClose: () => void;
   onSave: (productId: string, newStock: number, reason: string) => Promise<void>;
 }

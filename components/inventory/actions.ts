@@ -3,7 +3,7 @@
 import { connectDB } from "@/lib/db";
 import { Product } from "@/lib/models/product.model";
 import { requireSession } from "@/lib/session";
-import type { InventoryItem } from "@/types/inventory.types";
+import { InventoryItem } from "@/types/";
 
 export async function adjustStock(productId: string, newStock: number, reason: string) {
   await requireSession();
