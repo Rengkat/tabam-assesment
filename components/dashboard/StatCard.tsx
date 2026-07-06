@@ -13,20 +13,22 @@ export function StatCard({ title, value, change, trend, icon, iconBg }: StatCard
         <div className="space-y-1">
           <p className="text-sm font-medium text-slate-500">{title}</p>
           <p className="text-2xl font-bold text-slate-900">{value}</p>
-          <div className="flex items-center gap-1.5">
-            <span
-              className={`inline-flex items-center gap-1 text-xs font-medium ${
-                trend === "up" ? "text-green-600" : "text-red-600"
-              }`}>
-              {trend === "up" ? (
-                <ArrowUpRight className="w-3 h-3" aria-hidden="true" />
-              ) : (
-                <ArrowDownRight className="w-3 h-3" aria-hidden="true" />
-              )}
-              {Math.abs(change)}%
-            </span>
-            <span className="text-xs text-slate-400">vs last month</span>
-          </div>
+          {change !== undefined && trend && (
+            <div className="flex items-center gap-1.5">
+              <span
+                className={`inline-flex items-center gap-1 text-xs font-medium ${
+                  trend === "up" ? "text-green-600" : "text-red-600"
+                }`}>
+                {trend === "up" ? (
+                  <ArrowUpRight className="w-3 h-3" aria-hidden="true" />
+                ) : (
+                  <ArrowDownRight className="w-3 h-3" aria-hidden="true" />
+                )}
+                {Math.abs(change)}%
+              </span>
+              <span className="text-xs text-slate-400">vs last month</span>
+            </div>
+          )}
         </div>
         <div className={`p-3 rounded-xl ${iconBg}`} aria-hidden="true">
           {icon}
