@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-// import { signOut } from "next-auth/react";
-// import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { LayoutDashboard, Package, Tag, Box, ShoppingBag, LogOut, X, Store } from "lucide-react";
 
 interface SidebarProps {
@@ -39,14 +39,13 @@ const navItems = [
     color: "text-orange-500",
     bg: "bg-orange-500/10",
   },
-  { title: "Orders", href: "/orders", icon: ShoppingBag },
 ];
 
 export function Sidebar({ isMobile, onClose }: SidebarProps) {
   const pathname = usePathname();
-  //   const { data: session } = useSession();
+  const { data: session } = useSession();
 
-  //   const handleSignOut = () => signOut({ redirect: true, callbackUrl: "/login" });
+  const handleSignOut = () => signOut({ redirect: true, callbackUrl: "/login" });
 
   return (
     <div className="h-full w-full flex flex-col bg-white border-r border-slate-200">

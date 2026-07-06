@@ -3,8 +3,8 @@
 import { connectDB } from "@/lib/db";
 import { Product } from "@/lib/models/product.model";
 import { requireSession } from "@/lib/session";
+import "@/lib/models/category.model";
 import type { InventoryItem } from "@/types/inventory.types";
-import { Category } from "@/lib/models/category.model";
 export async function adjustStock(productId: string, newStock: number, reason: string) {
   await requireSession();
 

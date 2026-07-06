@@ -2,14 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Package, Tag, Box, ShoppingBag } from "lucide-react";
+import { LayoutDashboard, Package, Tag, Box } from "lucide-react";
 
 const navItems = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { title: "Products", href: "/products", icon: Package },
   { title: "Categories", href: "/categories", icon: Tag },
   { title: "Inventory", href: "/inventory", icon: Box },
-  { title: "Orders", href: "/orders", icon: ShoppingBag },
 ];
 
 export function MobileNav() {
