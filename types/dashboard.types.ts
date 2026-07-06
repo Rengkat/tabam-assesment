@@ -1,20 +1,19 @@
 export interface DashboardStat {
   title: string;
   value: string;
-  change: number;
-  trend: "up" | "down";
+  change?: number;
+  trend?: "up" | "down";
 }
 
-export interface RevenuePoint {
-  date: string;
-  revenue: number;
+export interface CategoryStockPoint {
+  category: string;
+  stock: number;
 }
 
-export interface RecentOrder {
+export interface RecentProduct {
   id: string;
-  customer: string;
-  email: string;
-  amount: number;
-  status: "completed" | "pending" | "processing" | "cancelled";
-  date: string;
+  name: string;
+  category: string;
+  price: number;
+  createdAt: string;
 }

@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { Menu, Search, LogOut } from "lucide-react";
-// import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-  //   const { data: session } = useSession();
+  const { data: session } = useSession();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   return (
@@ -50,7 +50,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             <span
               className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-semibold"
               aria-hidden="true">
-              U
+              {session?.user?.name?.[0] ?? "?"}
             </span>
           </button>
 
@@ -59,12 +59,12 @@ export function Header({ onMenuClick }: HeaderProps) {
               role="menu"
               className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1 z-50">
               <div className="px-4 py-3 border-b border-slate-200">
-                <p className="text-sm font-medium text-slate-900">Alexander Rengkat</p>
-                <p className="text-xs text-slate-500">alexander.rengkat@example.com</p>
+                <p className="text-sm font-medium text-slate-900">{session?.user?.name}</p>
+                <p className="text-xs text-slate-500">{session?.user?.email}</p>
               </div>
               <button
                 role="menuitem"
-                // onClick={() => signOut({ callbackUrl: "/login" })}
+                onClick={() => signOut({ callbackUrl: "/login" })}
                 className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-slate-50">
                 <LogOut className="w-4 h-4" aria-hidden="true" />
                 Sign Out
