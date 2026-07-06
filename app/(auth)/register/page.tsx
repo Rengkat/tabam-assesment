@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { RegisterForm } from "@/components/forms/RegisterForm";
+import AuthSkeleton from "@/components/forms/AuthSkeleton";
 
 export default function RegisterPage() {
   return (
@@ -7,7 +9,9 @@ export default function RegisterPage() {
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
       </div>
-      <RegisterForm />
+      <Suspense fallback={<AuthSkeleton />}>
+        <RegisterForm />
+      </Suspense>
     </div>
   );
 }

@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { LoginForm } from "@/components/forms/LoginForm";
+import AuthSkeleton from "@/components/forms/AuthSkeleton";
 
 export default function LoginPage() {
   return (
@@ -7,7 +9,9 @@ export default function LoginPage() {
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl" />
       </div>
-      <LoginForm />
+      <Suspense fallback={<AuthSkeleton />}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
