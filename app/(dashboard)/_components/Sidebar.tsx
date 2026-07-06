@@ -2,14 +2,14 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
-import { LayoutDashboard, Package, Tag, Box, ShoppingBag, LogOut, X, Store } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import { LayoutDashboard, Package, Tag, Box, LogOut, X, Store } from "lucide-react";
 
 interface SidebarProps {
   isMobile?: boolean;
   onClose?: () => void;
 }
+
 const navItems = [
   {
     title: "Dashboard",
@@ -46,6 +46,10 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
   const { data: session } = useSession();
 
   const handleSignOut = () => signOut({ redirect: true, callbackUrl: "/login" });
+
+  const userName = session?.user?.name ?? "User";
+  const userEmail = session?.user?.email ?? "";
+  const initial = userName.charAt(0).toUpperCase();
 
   return (
     <div className="h-full w-full flex flex-col bg-white border-r border-slate-200">
@@ -103,17 +107,17 @@ export function Sidebar({ isMobile, onClose }: SidebarProps) {
       <div className="p-4 border-t border-slate-200">
         <div className="flex items-center gap-3 p-2 rounded-xl">
           <div
-            className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold"
+            className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold flex-shrink-0"
             aria-hidden="true">
-            U
+            {initial}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-900 truncate">Alexander Rengkat</p>
-            <p className="text-xs text-slate-500 truncate">alexander.rengkat@example.com</p>
+            <p className="text-sm font-medium text-slate-900 truncate">{userName}</p>
+            <p className="text-xs text-slate-500 truncate">{userEmail}</p>
           </div>
         </div>
         <button
-          //   onClick={handleSignOut}
+          onClick={handleSignOut}
           className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500/40">
           <LogOut className="w-4 h-4" aria-hidden="true" />
           Sign Out
